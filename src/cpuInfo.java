@@ -28,6 +28,12 @@ public class cpuInfo {
      */
     public static String getModel() {
         String model = getField("model name");
+        String implementer = getField("CPU implementer");
+
+        switch (implementer) {
+            case "0x61":
+                model = "Apple M Series";
+        }
         return model.isEmpty() ? "unknown" : model;
     }
 
