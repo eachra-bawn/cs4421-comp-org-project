@@ -24,11 +24,35 @@ public class demo {
         System.out.println("cores: " + cpuInfo.getCount());
         System.out.println("model: " + cpuInfo.getModel());
 
-        for (int i = 0; i < cpuInfo.getCount(); i++) {
-            System.out.println(
-                "core " + i + ": busy=" + cpuInfo.getBusy(i) + " idle=" + cpuInfo.getIdle(i)
-            );
+        Core[] cpuCores = new Core[cpuInfo.getCount()];
+
+        for (int i = 0; i < cpuInfo.getCount(); i++){
+            cpuCores[i] = new Core(cpuInfo.getBusy(i),cpuInfo.getIdle(i));
         }
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt(); //restores interrupted status
+        }
+
+        double sumLoad = 0;
+        for (int i = 0; i < cpuInfo.getCount(); i++){
+            long beforeBusy = cpuCores[i].beforeBusy;
+            long beforeIdle = cpuCores[i].beforeIdle;
+            long secondBusy = cpuInfo.getBusy(i) - beforeBusy; //counts how many ticks a core was busy in 1s
+            long secondIdle = cpuInfo.getIdle(i) - beforeIdle; //counts how many ticks a core was idle in 1s
+            double busyRatio = ((double) secondBusy / (secondBusy + secondIdle));
+
+            System.out.println("core " + i + ": busy=" + (secondBusy + beforeBusy) + " idle=" +
+                    (secondIdle + beforeIdle) + "  (" + String.format("%.2f", busyRatio) + "%)"
+            );
+
+            sumLoad += busyRatio;
+        }
+
+        double avgLoad = sumLoad/cpuInfo.getCount();
+        System.out.println("Average load across all cores is " + String.format("%.5f", avgLoad) + "%.");
     }
 
     // printMemory now displays data as GibiBytes instead of kibibytes, because kibibytes is a silly way to display memory in 2026, - Luke-F-W
