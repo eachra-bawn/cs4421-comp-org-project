@@ -30,11 +30,16 @@ public class demo {
             cpuCores[i] = new Core(cpuInfo.getBusy(i),cpuInfo.getIdle(i));
         }
 
+        System.out.println("GATHERING DATA --- 1s");
+
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt(); //restores interrupted status
         }
+
+        System.out.print("\033[1A\033[2K"); //moves the cursor up by one line and clears it
+        System.out.flush(); //forces the text out of the buffer onto the screen immediately
 
         double sumLoad = 0;
         for (int i = 0; i < cpuInfo.getCount(); i++){
@@ -42,7 +47,7 @@ public class demo {
             long beforeIdle = cpuCores[i].beforeIdle;
             long secondBusy = cpuInfo.getBusy(i) - beforeBusy; //counts how many ticks a core was busy in 1s
             long secondIdle = cpuInfo.getIdle(i) - beforeIdle; //counts how many ticks a core was idle in 1s
-            double busyRatio = (((double) secondBusy / (secondBusy + secondIdle)) * 100); // multiplied by 100 to get a percentage
+            double busyRatio = (((double) secondBusy / (secondBusy + secondIdle)) * 100); //multiplied by 100 to get a percentage
 
             System.out.println("core " + i + ": busy=" + (secondBusy + beforeBusy) + " idle=" +
                     (secondIdle + beforeIdle) + "  (" + String.format("%.2f", busyRatio) + "%)"
