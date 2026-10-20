@@ -31,16 +31,16 @@ public class demo {
         }
     }
 
+    // printMemory now displays data as GibiBytes instead of kibibytes, because kibibytes is a silly way to display memory in 2026, - Luke-F-W
     private static void printMemoryInfo() {
         double percentageUsed = ((double) memInfo.getUsed() / (double) memInfo.getTotal()) * 100.0;
         System.out.println(
-            "memory: total=" +
-                memInfo.getTotal() +
-                " KiB, used=" +
-                memInfo.getUsed() +
-                " KiB " +
-                "(" +
-                percentageUsed +
+            "memory: total = " +
+                helpermethods.kibibytesToGigabyes(memInfo.getTotal()) +
+                " GiB, used = " +
+                helpermethods.kibibytesToGigabyes(memInfo.getUsed()) +
+                " GiB (" +
+                String.format("%.2f", percentageUsed) + 
                 "%)"
         );
     }
@@ -73,7 +73,7 @@ public class demo {
         try {
             usb = idLookup.usb();
         } catch (IOException e) {
-            System.out.println("COuld not look up USBs: " + e);
+            System.out.println("Could not look up USBs: " + e);
             return;
         }
         System.out.println("USB devices: " + usbInfo.getCount());
