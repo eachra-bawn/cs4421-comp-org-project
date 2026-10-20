@@ -36,9 +36,9 @@ public class demo {
         double percentageUsed = ((double) memInfo.getUsed() / (double) memInfo.getTotal()) * 100.0;
         System.out.println(
             "memory: total = " +
-                helpermethods.kibibytesToGigabyes(memInfo.getTotal()) +
+                helpermethods.kibibytesToGibibyes(memInfo.getTotal()) +
                 " GiB, used = " +
-                helpermethods.kibibytesToGigabyes(memInfo.getUsed()) +
+                helpermethods.kibibytesToGibibyes(memInfo.getUsed()) +
                 " GiB (" +
                 String.format("%.2f", percentageUsed) + 
                 "%)"

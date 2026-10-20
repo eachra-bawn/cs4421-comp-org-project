@@ -6,7 +6,7 @@ public class helpermethods {
     
     // This takes a long (which are KibiBytes) and returns them as GibiBytes
     // Made By Luke-F-W
-    public static long kibibytesToGigabyes(long kib){
+    public static long kibibytesToGibibyes(long kib){
         long gib = kib / 1048576;
         return gib;
     }
