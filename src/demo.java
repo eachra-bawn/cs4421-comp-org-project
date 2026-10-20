@@ -7,16 +7,52 @@
  * Build:  javac *.java
  * Run:    java demo        (run it from the folder that contains the ids folder)
  */
+
+import java.io.IOException;
+import java.nio.file.Path;
+
 public class demo {
 
     public static void main(String[] args) throws Exception {
         printCpuInfo();
+        printMemoryInfo();
+        printPCIInfo();
+        printUSBInfo();
+    }
 
+    private static void printCpuInfo() {
+        System.out.println("cores: " + cpuInfo.getCount());
+        System.out.println("model: " + cpuInfo.getModel());
+
+        for (int i = 0; i < cpuInfo.getCount(); i++) {
+            System.out.println(
+                "core " + i + ": busy=" + cpuInfo.getBusy(i) + " idle=" + cpuInfo.getIdle(i)
+            );
+        }
+    }
+
+    private static void printMemoryInfo() {
+        double percentageUsed = ((double) memInfo.getUsed() / (double) memInfo.getTotal()) * 100.0;
         System.out.println(
-            "memory: total=" + memInfo.getTotal() + " KiB, used=" + memInfo.getUsed() + " KiB"
+            "memory: total=" +
+                memInfo.getTotal() +
+                " KiB, used=" +
+                memInfo.getUsed() +
+                " KiB " +
+                "(" +
+                percentageUsed +
+                "%)"
         );
+    }
 
-        idLookup pci = idLookup.pci();
+    private static void printPCIInfo() {
+        idLookup pci = null;
+        try {
+            pci = idLookup.pci();
+        } catch (IOException e) {
+            System.out.println("Could not look up PCI devices: " + e);
+            return;
+        }
         System.out.println("PCI devices: " + pciInfo.getCount());
         for (int i = 0; i < pciInfo.getCount(); i++) {
             int vendor = pciInfo.getVendorId(i);
@@ -30,8 +66,16 @@ public class demo {
                 pci.deviceName(vendor, device)
             );
         }
+    }
 
-        idLookup usb = idLookup.usb();
+    private static void printUSBInfo() {
+        idLookup usb = null;
+        try {
+            usb = idLookup.usb();
+        } catch (IOException e) {
+            System.out.println("COuld not look up USBs: " + e);
+            return;
+        }
         System.out.println("USB devices: " + usbInfo.getCount());
         for (int i = 0; i < usbInfo.getCount(); i++) {
             int vendor = usbInfo.getVendorId(i);
@@ -44,17 +88,6 @@ public class demo {
                 product,
                 usb.vendorName(vendor),
                 usb.deviceName(vendor, product)
-            );
-        }
-    }
-
-    private static void printCpuInfo() {
-        System.out.println("cores: " + cpuInfo.getCount());
-        System.out.println("model: " + cpuInfo.getModel());
-
-        for (int i = 0; i < cpuInfo.getCount(); i++) {
-            System.out.println(
-                "core " + i + ": busy=" + cpuInfo.getBusy(i) + " idle=" + cpuInfo.getIdle(i)
             );
         }
     }
