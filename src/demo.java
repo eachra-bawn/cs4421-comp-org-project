@@ -105,19 +105,23 @@ public class demo {
             System.out.println("Could not look up USBs: " + e);
             return;
         }
-        System.out.println("USB devices: " + usbInfo.getCount());
-        for (int i = 0; i < usbInfo.getCount(); i++) {
-            int vendor = usbInfo.getVendorId(i);
-            int product = usbInfo.getProductId(i);
-            System.out.printf(
-                "  Bus %03d Device %03d: ID %04x:%04x  %s %s%n",
-                usbInfo.getBusNumber(i),
-                usbInfo.getDeviceNumber(i),
-                vendor,
-                product,
-                usb.vendorName(vendor),
-                usb.deviceName(vendor, product)
-            );
+        if (usbInfo.getCount() == 0){
+            System.out.println("USB devices: no USB devices found.");
+        }else {
+            System.out.println("USB devices: " + usbInfo.getCount());
+            for (int i = 0; i < usbInfo.getCount(); i++) {
+                int vendor = usbInfo.getVendorId(i);
+                int product = usbInfo.getProductId(i);
+                System.out.printf(
+                        "  Bus %03d Device %03d: ID %04x:%04x  %s %s%n",
+                        usbInfo.getBusNumber(i),
+                        usbInfo.getDeviceNumber(i),
+                        vendor,
+                        product,
+                        usb.vendorName(vendor),
+                        usb.deviceName(vendor, product)
+                );
+            }
         }
     }
 }
