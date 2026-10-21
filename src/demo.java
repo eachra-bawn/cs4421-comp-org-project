@@ -57,7 +57,7 @@ public class demo {
         }
 
         double avgLoad = sumLoad/cpuInfo.getCount();
-        System.out.println("Average load across all cores is " + String.format("%.5f", avgLoad) + "%.");
+        System.out.println("Average load across all cores is " + String.format("%.2f", avgLoad) + "%.");
     }
 
     // printMemory now displays data as GibiBytes instead of kibibytes, because kibibytes is a silly way to display memory in 2026, - Luke-F-W
@@ -65,9 +65,9 @@ public class demo {
         double percentageUsed = ((double) memInfo.getUsed() / (double) memInfo.getTotal()) * 100.0;
         System.out.println(
             "memory: total = " +
-                helpermethods.kibibytesToGibibyes(memInfo.getTotal()) +
+                String.format("%.2f", helpermethods.kibibytesToGibibyes(memInfo.getTotal())) +
                 " GiB, used = " +
-                helpermethods.kibibytesToGibibyes(memInfo.getUsed()) +
+                String.format("%.2f", helpermethods.kibibytesToGibibyes(memInfo.getUsed())) +
                 " GiB (" +
                 String.format("%.2f", percentageUsed) + 
                 "%)"
