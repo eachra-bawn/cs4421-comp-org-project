@@ -1,3 +1,4 @@
+
 /**
  * A short example that shows how to call each provided class. It prints raw
  * numbers and a few names. It is NOT a solution to the assignment: you still
@@ -9,7 +10,6 @@
  */
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.ArrayList;
 
 public class demo {
@@ -44,8 +44,8 @@ public class demo {
 
         Core[] cpuCores = new Core[cpuInfo.getCount()];
 
-        for (int i = 0; i < cpuInfo.getCount(); i++){
-            cpuCores[i] = new Core(cpuInfo.getBusy(i),cpuInfo.getIdle(i));
+        for (int i = 0; i < cpuInfo.getCount(); i++) {
+            cpuCores[i] = new Core(cpuInfo.getBusy(i), cpuInfo.getIdle(i));
         }
 
         System.out.println("GATHERING DATA --- 1s");
@@ -53,43 +53,43 @@ public class demo {
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
-            Thread.currentThread().interrupt(); //restores interrupted status
+            Thread.currentThread().interrupt(); // restores interrupted status
         }
 
-        System.out.print("\033[1A\033[2K"); //moves the cursor up by one line and clears it
-        System.out.flush(); //forces the text out of the buffer onto the screen immediately
+        System.out.print("\033[1A\033[2K"); // moves the cursor up by one line and clears it
+        System.out.flush(); // forces the text out of the buffer onto the screen immediately
 
         double sumLoad = 0;
-        for (int i = 0; i < cpuInfo.getCount(); i++){
+        for (int i = 0; i < cpuInfo.getCount(); i++) {
             long beforeBusy = cpuCores[i].beforeBusy;
             long beforeIdle = cpuCores[i].beforeIdle;
-            long secondBusy = cpuInfo.getBusy(i) - beforeBusy; //counts how many ticks a core was busy in 1s
-            long secondIdle = cpuInfo.getIdle(i) - beforeIdle; //counts how many ticks a core was idle in 1s
-            double busyRatio = (((double) secondBusy / (secondBusy + secondIdle)) * 100); //multiplied by 100 to get a percentage
+            long secondBusy = cpuInfo.getBusy(i) - beforeBusy; // counts how many ticks a core was busy in 1s
+            long secondIdle = cpuInfo.getIdle(i) - beforeIdle; // counts how many ticks a core was idle in 1s
+            double busyRatio = (((double) secondBusy / (secondBusy + secondIdle)) * 100); // multiplied by 100 to get a
+                                                                                          // percentage
 
             System.out.println("core " + i + ": busy=" + (secondBusy + beforeBusy) + " idle=" +
-                    (secondIdle + beforeIdle) + "  (" + String.format("%.2f", busyRatio) + "%)"
-            );
+                    (secondIdle + beforeIdle) + "  (" + String.format("%.2f", busyRatio) + "%)");
 
             sumLoad += busyRatio;
         }
 
-        double avgLoad = sumLoad/cpuInfo.getCount();
+        double avgLoad = sumLoad / cpuInfo.getCount();
         System.out.println("Average load across all cores is " + String.format("%.2f", avgLoad) + "%.");
     }
 
-    // printMemory now displays data as GibiBytes instead of kibibytes, because kibibytes is a silly way to display memory in 2026, - Luke-F-W
+    // printMemory now displays data as GibiBytes instead of kibibytes, because
+    // kibibytes is a silly way to display memory in 2026, - Luke-F-W
     private static void printMemoryInfo() {
         double percentageUsed = ((double) memInfo.getUsed() / (double) memInfo.getTotal()) * 100.0;
         System.out.println(
-            "memory: total = " +
-                String.format("%.2f", helpermethods.kibibytesToGibibyes(memInfo.getTotal())) +
-                " GiB, used = " +
-                String.format("%.2f", helpermethods.kibibytesToGibibyes(memInfo.getUsed())) +
-                " GiB (" +
-                String.format("%.2f", percentageUsed) + 
-                "%)"
-        );
+                "memory: total = " +
+                        String.format("%.2f", helpermethods.kibibytesToGibibyes(memInfo.getTotal())) +
+                        " GiB, used = " +
+                        String.format("%.2f", helpermethods.kibibytesToGibibyes(memInfo.getUsed())) +
+                        " GiB (" +
+                        String.format("%.2f", percentageUsed) +
+                        "%)");
     }
 
     private static void printPCIInfoByVendor() {
@@ -122,13 +122,12 @@ public class demo {
 
         for (int i = 0; i < pciInfo.getCount(); i++) {
             System.out.printf(
-                "  %s  %04x:%04x  %s %s%n",
-                pciDeviceInfo.getAddresses().get(i),
-                pciDeviceInfo.getVendorIds().get(i),
-                pciDeviceInfo.getDeviceIds().get(i),
-                pciDeviceInfo.getVendorNames().get(i),
-                pciDeviceInfo.getDeviceName(pci, i)
-            );
+                    "  %s  %04x:%04x  %s %s%n",
+                    pciDeviceInfo.getAddresses().get(i),
+                    pciDeviceInfo.getVendorIds().get(i),
+                    pciDeviceInfo.getDeviceIds().get(i),
+                    pciDeviceInfo.getVendorNames().get(i),
+                    pciDeviceInfo.getDeviceName(pci, i));
         }
 
         pciDeviceInfo.getVendorSummary();
@@ -160,13 +159,12 @@ public class demo {
             pciDeviceInfo.addVendorName(name);
 
             System.out.printf(
-                "  %s  %04x:%04x  %s %s%n",
-                address,
-                vendorId,
-                deviceId,
-                name,
-                pci.deviceName(vendorId, deviceId)
-            );
+                    "  %s  %04x:%04x  %s %s%n",
+                    address,
+                    vendorId,
+                    deviceId,
+                    name,
+                    pci.deviceName(vendorId, deviceId));
         }
 
         pciDeviceInfo.getVendorSummary();
@@ -188,33 +186,32 @@ public class demo {
             int vendor = usbInfo.getVendorId(i);
             int product = usbInfo.getProductId(i);
             System.out.printf(
-                "  Bus %03d Device %03d: ID %04x:%04x  %s %s%n",
-                usbInfo.getBusNumber(i),
-                usbInfo.getDeviceNumber(i),
-                vendor,
-                product,
-                usb.vendorName(vendor),
-                usb.deviceName(vendor, product)
-            );
-        if (usbInfo.getCount() == 0){
-            System.out.println("USB devices: no USB devices found.");
-        }else {
-            System.out.println("USB devices: " + usbInfo.getCount());
-            for (int i = 0; i < usbInfo.getCount(); i++) {
-                int vendor = usbInfo.getVendorId(i);
-                int product = usbInfo.getProductId(i);
-                System.out.printf(
-                        "  Bus %03d Device %03d: ID %04x:%04x  %s %s%n",
-                        usbInfo.getBusNumber(i),
-                        usbInfo.getDeviceNumber(i),
-                        vendor,
-                        product,
-                        usb.vendorName(vendor),
-                        usb.deviceName(vendor, product)
-                );
+                    "  Bus %03d Device %03d: ID %04x:%04x  %s %s%n",
+                    usbInfo.getBusNumber(i),
+                    usbInfo.getDeviceNumber(i),
+                    vendor,
+                    product,
+                    usb.vendorName(vendor),
+                    usb.deviceName(vendor, product));
+
+            if (usbInfo.getCount() == 0) {
+                System.out.println("USB devices: no USB devices found.");
+            } else {
+                System.out.println("USB devices: " + usbInfo.getCount());
+                for (int j = 0; j < usbInfo.getCount(); j++) {
+                    System.out.printf(
+                            "  Bus %03d Device %03d: ID %04x:%04x  %s %s%n",
+                            usbInfo.getBusNumber(i),
+                            usbInfo.getDeviceNumber(i),
+                            vendor,
+                            product,
+                            usb.vendorName(vendor),
+                            usb.deviceName(vendor, product));
+                }
             }
         }
     }
+
 }
 
 class pciDeviceInfoLine {
@@ -273,10 +270,7 @@ class pciDeviceInfoLine {
 
     public void getVendorSummary() {
         System.out.println("PCI Summary:");
-        ArrayList<Integer> frequencies = new ArrayList<>();
-
         int count = 0;
-
         ArrayList<String> previous = new ArrayList<>();
 
         for (String vendorNameOuter : this.vendorNames) {
