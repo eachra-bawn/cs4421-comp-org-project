@@ -120,25 +120,38 @@ public class demo {
             int vendorId = pciInfo.getVendorId(i);
             int deviceId = pciInfo.getDeviceId(i);
             String address = pciInfo.getAddress(i);
-            String name = pci.vendorName(vendorId);
+            String vendorName = pci.vendorName(vendorId);
+            String deviceName = pci.deviceName(vendorId, deviceId);
 
             pciDeviceInfo.addVendorId(vendorId);
             pciDeviceInfo.addDeviceId(deviceId);
             pciDeviceInfo.addAddress(address);
-            pciDeviceInfo.addVendorName(name);
+            pciDeviceInfo.addVendorName(vendorName);
+            pciDeviceInfo.addDeviceName(deviceName);
 
             pciDeviceInfo.sortVendorNames();
         }
 
         for (int i = 0; i < pciInfo.getCount(); i++) {
-            System.out.printf(
-                "  %s  %04x:%04x  %s %s%n",
-                pciDeviceInfo.getAddresses().get(i),
-                pciDeviceInfo.getVendorIds().get(i),
-                pciDeviceInfo.getDeviceIds().get(i),
-                pciDeviceInfo.getVendorNames().get(i),
-                pciDeviceInfo.getDeviceName(pci, i)
-            );
+            if (pciDeviceInfo.getVendorNames().get(i) == null) {
+                System.out.printf(
+                    "  %s  %04x:%04x  %04x%n",
+                    pciDeviceInfo.getAddresses().get(i),
+                    pciDeviceInfo.getVendorIds().get(i),
+                    pciDeviceInfo.getDeviceIds().get(i),
+                    pciDeviceInfo.getVendorNames().get(i),
+                    pciDeviceInfo.getVendorIds().get(i)
+                );
+            } else {
+                System.out.printf(
+                    "  %s  %04x:%04x  %s %s%n",
+                    pciDeviceInfo.getAddresses().get(i),
+                    pciDeviceInfo.getVendorIds().get(i),
+                    pciDeviceInfo.getDeviceIds().get(i),
+                    pciDeviceInfo.getVendorNames().get(i),
+                    pciDeviceInfo.getDeviceNames().get(i)
+                );
+            }
         }
 
         pciDeviceInfo.getVendorSummary();
@@ -162,21 +175,33 @@ public class demo {
             int vendorId = pciInfo.getVendorId(i);
             int deviceId = pciInfo.getDeviceId(i);
             String address = pciInfo.getAddress(i);
-            String name = pci.vendorName(vendorId);
+            String vendorName = pci.vendorName(vendorId);
+            String deviceName = pci.deviceName(vendorId, deviceId);
 
             pciDeviceInfo.addVendorId(vendorId);
             pciDeviceInfo.addDeviceId(deviceId);
             pciDeviceInfo.addAddress(address);
-            pciDeviceInfo.addVendorName(name);
+            pciDeviceInfo.addVendorName(vendorName);
+            pciDeviceInfo.addDeviceName(deviceName);
 
-            System.out.printf(
-                "  %s  %04x:%04x  %s %s%n",
-                address,
-                vendorId,
-                deviceId,
-                name,
-                pci.deviceName(vendorId, deviceId)
-            );
+            if (vendorName == null) {
+                System.out.printf(
+                    "  %s  %04x:%04x  %04x%n",
+                    pciDeviceInfo.getAddresses().get(i),
+                    pciDeviceInfo.getVendorIds().get(i),
+                    pciDeviceInfo.getDeviceIds().get(i),
+                    pciDeviceInfo.getVendorIds().get(i)
+                );
+            } else {
+                System.out.printf(
+                    "  %s  %04x:%04x  %s %s%n",
+                    pciDeviceInfo.getAddresses().get(i),
+                    pciDeviceInfo.getVendorIds().get(i),
+                    pciDeviceInfo.getDeviceIds().get(i),
+                    pciDeviceInfo.getVendorNames().get(i),
+                    pciDeviceInfo.getDeviceNames().get(i)
+                );
+            }
         }
 
         pciDeviceInfo.getVendorSummary();
@@ -196,20 +221,34 @@ public class demo {
             System.out.println("USB devices: no USB devices found.");
         } else {
             System.out.println("USB devices: " + usbInfo.getCount());
+
             for (int i = 0; i < usbInfo.getCount(); i++) {
                 int vendor = usbInfo.getVendorId(i);
                 int product = usbInfo.getProductId(i);
-                System.out.printf(
-                    "  Bus %03d Device %03d: ID %04x:%04x  %s %s%n",
-                    usbInfo.getBusNumber(i),
-                    usbInfo.getDeviceNumber(i),
-                    vendor,
-                    product,
-                    usb.vendorName(vendor),
-                    usb.deviceName(vendor, product)
-                );
+                String vendorName = usb.vendorName(vendor);
+                String deviceName = usb.deviceName(vendor, product);
+
+                if (vendorName == null) {
+                    System.out.printf(
+                        "  Bus %03d Device %03d: ID %04x:%04x  %d%n",
+                        usbInfo.getBusNumber(i),
+                        usbInfo.getDeviceNumber(i),
+                        vendor,
+                        product,
+                        vendorName
+                    );
+                } else {
+                    System.out.printf(
+                        "  Bus %03d Device %03d: ID %04x:%04x  %s %s%n",
+                        usbInfo.getBusNumber(i),
+                        usbInfo.getDeviceNumber(i),
+                        vendor,
+                        product,
+                        vendorName,
+                        deviceName
+                    );
+                }
             }
         }
     }
 }
-
