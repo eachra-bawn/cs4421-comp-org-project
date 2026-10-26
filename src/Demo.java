@@ -34,6 +34,7 @@ public class Demo {
         } else {
             printPCIInfoByBus();
         }
+        HtmlMaker.makeHtml();
     }
 
     private static void printCpuInfo() {
