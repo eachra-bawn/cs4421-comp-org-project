@@ -10,7 +10,7 @@
 
 import java.io.IOException;
 
-public class Main {
+public class demo {
 
     public static void main(String[] args) throws Exception {
         printCpuInfo();
@@ -37,15 +37,16 @@ public class Main {
     }
 
     private static void printCpuInfo() {
-        System.out.println("CPU Info:");
-        System.out.println("  Model: " + CpuInfo.getModel());
-        System.out.println("  Cores: " + CpuInfo.getCount() + "\n");
+        System.out.println("cores: " + cpuInfo.getCount());
+        System.out.println("model: " + cpuInfo.getModel());
 
-        Core[] cpuCores = new Core[CpuInfo.getCount()];
+        Core[] cpuCores = new Core[cpuInfo.getCount()];
 
-        for (int i = 0; i < CpuInfo.getCount(); i++) {
-            cpuCores[i] = new Core(CpuInfo.getBusy(i), CpuInfo.getIdle(i));
+        for (int i = 0; i < cpuInfo.getCount(); i++) {
+            cpuCores[i] = new Core(cpuInfo.getBusy(i), cpuInfo.getIdle(i));
         }
+
+        System.out.println("GATHERING DATA --- 1s");
 
         try {
             Thread.sleep(1000);
@@ -53,20 +54,20 @@ public class Main {
             Thread.currentThread().interrupt(); // restores interrupted status
         }
 
-        System.out.print("\033[1A\033[2K\n"); // moves the cursor up by one line and clears it
+        System.out.print("\033[1A\033[2K"); // moves the cursor up by one line and clears it
         System.out.flush(); // forces the text out of the buffer onto the screen immediately
 
         double sumLoad = 0;
-        for (int i = 0; i < CpuInfo.getCount(); i++) {
+        for (int i = 0; i < cpuInfo.getCount(); i++) {
             long beforeBusy = cpuCores[i].beforeBusy;
             long beforeIdle = cpuCores[i].beforeIdle;
-            long secondBusy = CpuInfo.getBusy(i) - beforeBusy; // counts how many ticks a core was busy in 1s
-            long secondIdle = CpuInfo.getIdle(i) - beforeIdle; // counts how many ticks a core was idle in 1s
+            long secondBusy = cpuInfo.getBusy(i) - beforeBusy; // counts how many ticks a core was busy in 1s
+            long secondIdle = cpuInfo.getIdle(i) - beforeIdle; // counts how many ticks a core was idle in 1s
             double busyRatio = ((double) secondBusy / (secondBusy + secondIdle)) * 100; // multiplied by 100 to get a
             // percentage
 
             System.out.println(
-                "  Core " +
+                "core " +
                     i +
                     ": busy=" +
                     (secondBusy + beforeBusy) +
@@ -80,92 +81,45 @@ public class Main {
             sumLoad += busyRatio;
         }
 
-        double avgLoad = sumLoad / CpuInfo.getCount();
+        double avgLoad = sumLoad / cpuInfo.getCount();
         System.out.println(
-            "  Average load across all cores is " + String.format("%.2f", avgLoad) + "%.\n"
+            "Average load across all cores is " + String.format("%.2f", avgLoad) + "%."
         );
     }
 
     // printMemory now displays data as GibiBytes instead of kibibytes, because
     // kibibytes is a silly way to display memory in 2026, - Luke-F-W
     private static void printMemoryInfo() {
-        System.out.println("Memory Info:");
-        double percentageUsed = ((double) MemInfo.getUsed() / (double) MemInfo.getTotal()) * 100.0;
+        double percentageUsed = ((double) memInfo.getUsed() / (double) memInfo.getTotal()) * 100.0;
         System.out.println(
-            "  Total = " +
-                String.format("%.2f", HelperMethods.kibibytesToGibibyes(MemInfo.getTotal())) +
-                " GiB, Used = " +
-                String.format("%.2f", HelperMethods.kibibytesToGibibyes(MemInfo.getUsed())) +
+            "memory: total = " +
+                String.format("%.2f", helpermethods.kibibytesToGibibyes(memInfo.getTotal())) +
+                " GiB, used = " +
+                String.format("%.2f", helpermethods.kibibytesToGibibyes(memInfo.getUsed())) +
                 " GiB (" +
                 String.format("%.2f", percentageUsed) +
-                "%)\n"
+                "%)"
         );
     }
 
-    private static void printUSBInfo() {
-        IdLookup usb = null;
-
-        try {
-            usb = IdLookup.usb();
-        } catch (IOException e) {
-            System.out.println("Could not look up USBs: " + e);
-            return;
-        }
-
-        if (UsbInfo.getCount() == 0) {
-            System.out.println("USB devices: no USB devices found.");
-        } else {
-            System.out.println("USB devices: " + UsbInfo.getCount());
-
-            for (int i = 0; i < UsbInfo.getCount(); i++) {
-                int vendor = UsbInfo.getVendorId(i);
-                int product = UsbInfo.getProductId(i);
-                String vendorName = usb.vendorName(vendor);
-                String deviceName = usb.deviceName(vendor, product);
-
-                if (vendorName == null) {
-                    System.out.printf(
-                        "  Bus %03d Device %03d: ID %04x:%04x  %d%n",
-                        UsbInfo.getBusNumber(i),
-                        UsbInfo.getDeviceNumber(i),
-                        vendor,
-                        product,
-                        vendorName
-                    );
-                } else {
-                    System.out.printf(
-                        "  Bus %03d Device %03d: ID %04x:%04x  %s %s%n",
-                        UsbInfo.getBusNumber(i),
-                        UsbInfo.getDeviceNumber(i),
-                        vendor,
-                        product,
-                        vendorName,
-                        deviceName
-                    );
-                }
-            }
-        }
-        System.out.println();
-    }
-
     private static void printPCIInfoByVendor() {
-        IdLookup pci = null;
+        idLookup pci = null;
 
         try {
-            pci = IdLookup.pci();
+            pci = idLookup.pci();
         } catch (IOException e) {
             System.out.println("Could not look up PCI devices: " + e);
             return;
         }
 
-        System.out.println("PCI devices: " + PciInfo.getCount());
+        System.out.println("PCI devices: " + pciInfo.getCount());
 
-        PciDeviceInfoLine pciDeviceInfo = new PciDeviceInfoLine();
+        pciDeviceInfoLine pciDeviceInfo = new pciDeviceInfoLine();
 
-        for (int i = 0; i < PciInfo.getCount(); i++) {
-            int vendorId = PciInfo.getVendorId(i);
-            int deviceId = PciInfo.getDeviceId(i);
-            String address = PciInfo.getAddress(i);
+        for (int i = 0; i < pciInfo.getCount(); i++) {
+            int vendorId = pciInfo.getVendorId(i);
+            int deviceId = pciInfo.getDeviceId(i);
+            String address = pciInfo.getAddress(i);
             String vendorName = pci.vendorName(vendorId);
             String deviceName = pci.deviceName(vendorId, deviceId);
 
@@ -178,7 +132,7 @@ public class Main {
             pciDeviceInfo.sortVendorNames();
         }
 
-        for (int i = 0; i < PciInfo.getCount(); i++) {
+        for (int i = 0; i < pciInfo.getCount(); i++) {
             if (pciDeviceInfo.getVendorNames().get(i) == null) {
                 System.out.printf(
                     "  %s  %04x:%04x  %04x%n",
@@ -200,29 +154,27 @@ public class Main {
             }
         }
 
-        System.out.println();
-
         pciDeviceInfo.getVendorSummary();
     }
 
     private static void printPCIInfoByBus() {
-        IdLookup pci = null;
+        idLookup pci = null;
 
         try {
-            pci = IdLookup.pci();
+            pci = idLookup.pci();
         } catch (IOException e) {
             System.out.println("Could not look up PCI devices: " + e);
             return;
         }
 
-        System.out.println("PCI devices: " + PciInfo.getCount());
+        System.out.println("PCI devices: " + pciInfo.getCount());
 
-        PciDeviceInfoLine pciDeviceInfo = new PciDeviceInfoLine();
+        pciDeviceInfoLine pciDeviceInfo = new pciDeviceInfoLine();
 
-        for (int i = 0; i < PciInfo.getCount(); i++) {
-            int vendorId = PciInfo.getVendorId(i);
-            int deviceId = PciInfo.getDeviceId(i);
-            String address = PciInfo.getAddress(i);
+        for (int i = 0; i < pciInfo.getCount(); i++) {
+            int vendorId = pciInfo.getVendorId(i);
+            int deviceId = pciInfo.getDeviceId(i);
+            String address = pciInfo.getAddress(i);
             String vendorName = pci.vendorName(vendorId);
             String deviceName = pci.deviceName(vendorId, deviceId);
 
@@ -252,8 +204,51 @@ public class Main {
             }
         }
 
-        System.out.println();
-
         pciDeviceInfo.getVendorSummary();
+    }
+
+    private static void printUSBInfo() {
+        idLookup usb = null;
+
+        try {
+            usb = idLookup.usb();
+        } catch (IOException e) {
+            System.out.println("Could not look up USBs: " + e);
+            return;
+        }
+
+        if (usbInfo.getCount() == 0) {
+            System.out.println("USB devices: no USB devices found.");
+        } else {
+            System.out.println("USB devices: " + usbInfo.getCount());
+
+            for (int i = 0; i < usbInfo.getCount(); i++) {
+                int vendor = usbInfo.getVendorId(i);
+                int product = usbInfo.getProductId(i);
+                String vendorName = usb.vendorName(vendor);
+                String deviceName = usb.deviceName(vendor, product);
+
+                if (vendorName == null) {
+                    System.out.printf(
+                        "  Bus %03d Device %03d: ID %04x:%04x  %d%n",
+                        usbInfo.getBusNumber(i),
+                        usbInfo.getDeviceNumber(i),
+                        vendor,
+                        product,
+                        vendorName
+                    );
+                } else {
+                    System.out.printf(
+                        "  Bus %03d Device %03d: ID %04x:%04x  %s %s%n",
+                        usbInfo.getBusNumber(i),
+                        usbInfo.getDeviceNumber(i),
+                        vendor,
+                        product,
+                        vendorName,
+                        deviceName
+                    );
+                }
+            }
+        }
     }
 }

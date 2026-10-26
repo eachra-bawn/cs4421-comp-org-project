@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class PciDeviceInfoLine {
+public class pciDeviceInfoLine {
 
     ArrayList<Integer> vendorIds;
     ArrayList<Integer> deviceIds;
@@ -8,7 +8,7 @@ public class PciDeviceInfoLine {
     ArrayList<String> vendorNames;
     ArrayList<String> deviceNames;
 
-    public PciDeviceInfoLine() {
+    public pciDeviceInfoLine() {
         this.vendorIds = new ArrayList<>();
         this.deviceIds = new ArrayList<>();
         this.addresses = new ArrayList<>();
