@@ -9,9 +9,9 @@ server. Windows (including WSL2) and macOS do not provide these files.
 
     mkdir -p out
     javac -d out src/*.java
-    java -cp out demo
+    java -cp out Demo
 
-Run `java` from this folder, so that the `ids` folder is found. `demo` shows
+Run `java` from this folder, so that the `ids` folder is found. `Demo` shows
 how to call each class; it is not a solution to the assignment.
 
 ## The classes
@@ -21,12 +21,12 @@ empty string), so a missing file does not crash your program.
 
 | Class | Methods | Source |
 | --- | --- | --- |
-| `cpuInfo` | `getCount()`, `getModel()`, `getField(name)`, `getBusy(core)`, `getIdle(core)` | `/proc/cpuinfo`, `/proc/stat` |
-| `memInfo` | `getTotal()`, `getAvailable()`, `getUsed()`, `field(name)` (all in KiB) | `/proc/meminfo` |
-| `pciInfo` | `getCount()`, `getAddress(i)`, `getBus(i)`, `getDevice(i)`, `getFunction(i)`, `getVendorId(i)`, `getDeviceId(i)`, `getClassCode(i)`, `rescan()` | `/sys/bus/pci/devices` |
-| `usbInfo` | `getCount()`, `getName(i)`, `getVendorId(i)`, `getProductId(i)`, `getManufacturer(i)`, `getProduct(i)`, `getBusNumber(i)`, `getDeviceNumber(i)`, `rescan()` | `/sys/bus/usb/devices` |
-| `idLookup` | `pci()`, `usb()`, `vendorName(id)`, `deviceName(vendor, device)`, `className(classCode)` | `ids/pci.ids`, `ids/usb.ids` |
-| `sysFile` | internal helper used by the classes above | |
+| `CpuInfo` | `getCount()`, `getModel()`, `getField(name)`, `getBusy(core)`, `getIdle(core)` | `/proc/cpuinfo`, `/proc/stat` |
+| `MemInfo` | `getTotal()`, `getAvailable()`, `getUsed()`, `field(name)` (all in KiB) | `/proc/meminfo` |
+| `PciInfo` | `getCount()`, `getAddress(i)`, `getBus(i)`, `getDevice(i)`, `getFunction(i)`, `getVendorId(i)`, `getDeviceId(i)`, `getClassCode(i)`, `rescan()` | `/sys/bus/pci/devices` |
+| `UsbInfo` | `getCount()`, `getName(i)`, `getVendorId(i)`, `getProductId(i)`, `getManufacturer(i)`, `getProduct(i)`, `getBusNumber(i)`, `getDeviceNumber(i)`, `rescan()` | `/sys/bus/usb/devices` |
+| `IdLookup` | `pci()`, `usb()`, `vendorName(id)`, `deviceName(vendor, device)`, `className(classCode)` | `ids/pci.ids`, `ids/usb.ids` |
+| `SysFile` | internal helper used by the classes above | |
 
 Notes:
 
@@ -34,15 +34,15 @@ Notes:
   twice, about a second apart, and work from the differences.
 - On arm64 there is no `model name` in `/proc/cpuinfo`: `getModel()` returns
   "unknown". Use `getField("CPU part")` or `getField("CPU implementer")`.
-- `usbInfo` lists root hubs as well as plugged-in devices, in the same order as `lsusb`, and `getBusNumber(i)` and `getDeviceNumber(i)` give the numbers that `lsusb` prints as "Bus 001 Device 002". A virtual machine or
+- `UsbInfo` lists root hubs as well as plugged-in devices, in the same order as `lsusb`, and `getBusNumber(i)` and `getDeviceNumber(i)` give the numbers that `lsusb` prints as "Bus 001 Device 002". A virtual machine or
   the cloud server may have no USB at all, so `getCount()` can be 0.
-- `idLookup` methods return `null` when an ID is not in the file.
+- `IdLookup` methods return `null` when an ID is not in the file.
 
 ## Testing against a copy of /proc and /sys
 
 To test with data from another machine, copy `/proc/cpuinfo`, `/proc/stat`,
 `/proc/meminfo` and the `/sys/bus` folders into a folder, and run with
-`java -Dhw.root=/path/to/folder -cp out demo`.
+`java -Dhw.root=/path/to/folder -cp out Demo`.
 
 ## The ID files
 
