@@ -10,7 +10,6 @@
 
 import java.io.IOException;
 
-
 public class demo {
 
     public static void main(String[] args) throws Exception {
@@ -35,10 +34,6 @@ public class demo {
         } else {
             printPCIInfoByBus();
         }
-        HtmlMaker.makeHtml();
-
-
-
     }
 
     private static void printCpuInfo() {
@@ -68,7 +63,8 @@ public class demo {
             long beforeIdle = cpuCores[i].beforeIdle;
             long secondBusy = cpuInfo.getBusy(i) - beforeBusy; // counts how many ticks a core was busy in 1s
             long secondIdle = cpuInfo.getIdle(i) - beforeIdle; // counts how many ticks a core was idle in 1s
-            double busyRatio = ((double) secondBusy / (secondBusy + secondIdle)) * 100; // multiplied by 100 to get a percent
+            double busyRatio = ((double) secondBusy / (secondBusy + secondIdle)) * 100; // multiplied by 100 to get a
+            // percentage
 
             System.out.println(
                 "core " +
