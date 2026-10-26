@@ -9,7 +9,7 @@ server. Windows (including WSL2) and macOS do not provide these files.
 
     mkdir -p out
     javac -d out src/*.java
-    java -cp out demo
+    java -cp out Main
 
 Run `java` from this folder, so that the `ids` folder is found. `demo` shows
 how to call each class; it is not a solution to the assignment.
