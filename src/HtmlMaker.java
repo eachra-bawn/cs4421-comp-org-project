@@ -8,9 +8,9 @@ public class HtmlMaker {
         // THIS SECTION DOES ALL THE HTML STUFF
 
         // get CPU information for silly html file
-        String cpuModel = cpuInfo.getModel();
-        String cpuCores = String.valueOf(cpuInfo.getCount());
-        double[][] workload = helpermethods.workloadPerCore();
+        String cpuModel = CpuInfo.getModel();
+        String cpuCores = String.valueOf(CpuInfo.getCount());
+        double[][] workload = HelperMethods.workloadPerCore();
 
         
         String html = Files.readString(Path.of("src/HtmlTemp.html"));
@@ -46,17 +46,17 @@ public class HtmlMaker {
         jsonCpuCores += "]}";
 
         // This handles memory
-        String[] memoryInfo = helpermethods.getRAMInfo();
+        String[] memoryInfo = HelperMethods.getRAMInfo();
         html = html.replace("{{MEM_USED}}", memoryInfo[1]);
         html = html.replace("{{MEM_TOTAL}}", memoryInfo[0]);
         html = html.replace("{{MEM_PERCENT}}", memoryInfo[2]);
 
         // This handles USBInfo
-        int usbCountint = usbInfo.getCount();
+        int usbCountint = UsbInfo.getCount();
         String usbCountString = String.format("%d", usbCountint);
         html = html.replace("{{USB_COUNT}}", usbCountString);
 
-        String[][] usbinfo = helpermethods.printUSBInfo();
+        String[][] usbinfo = HelperMethods.printUSBInfo();
 
         String jsonUsbDevices = "{\"Usb Devices\":[";
         for(int i = 0; i < usbinfo.length; i++){
@@ -94,11 +94,11 @@ public class HtmlMaker {
         jsonUsbDevices += "]}";
 
         // This handles PCI Devices
-        int pciCountInt = pciInfo.getCount();
+        int pciCountInt = PciInfo.getCount();
         String pciCountStr = String.format("%d", pciCountInt);
         html = html.replace("{{PCI_COUNT}}", pciCountStr);
 
-        String[][] pciInfo = helpermethods.getPciInfo();
+        String[][] pciInfo = HelperMethods.getPciInfo();
 
 
         String jsonPCIDevices = "{\"PCI Devices\":[";
@@ -145,4 +145,3 @@ public class HtmlMaker {
         
     }
 }
-

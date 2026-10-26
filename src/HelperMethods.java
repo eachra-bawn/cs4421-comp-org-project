@@ -5,7 +5,7 @@ I kind of just throw any 1 off methods i need in here -Luke-F-W
 
 import java.io.IOException;
 
-public class helpermethods {
+public class HelperMethods {
     
     // This takes a long (which are KibiBytes) and returns them as GibiBytes
     // Made By Luke-F-W
@@ -16,13 +16,13 @@ public class helpermethods {
 
 
     public static double[][] workloadPerCore() {
-        Core[] cpuCores = new Core[cpuInfo.getCount()];
+        Core[] cpuCores = new Core[CpuInfo.getCount()];
 
-        for (int i = 0; i < cpuInfo.getCount(); i++) {
-            cpuCores[i] = new Core(cpuInfo.getBusy(i), cpuInfo.getIdle(i));
+        for (int i = 0; i < CpuInfo.getCount(); i++) {
+            cpuCores[i] = new Core(CpuInfo.getBusy(i), CpuInfo.getIdle(i));
         }
 
-        double[][] cpuarray = new double[cpuInfo.getCount()][3];
+        double[][] cpuarray = new double[CpuInfo.getCount()][3];
 
         try {
             Thread.sleep(1000);
@@ -30,13 +30,13 @@ public class helpermethods {
             Thread.currentThread().interrupt(); // restores interrupted status
         }
 
-        for (int i = 0; i < cpuInfo.getCount(); i++) {
+        for (int i = 0; i < CpuInfo.getCount(); i++) {
             long beforeBusy = cpuCores[i].beforeBusy;
             long beforeIdle = cpuCores[i].beforeIdle;
 
 
-            long secondBusy = cpuInfo.getBusy(i) - beforeBusy; // counts how many ticks a core was busy in 1s
-            long secondIdle = cpuInfo.getIdle(i) - beforeIdle; // counts how many ticks a core was idle in 1s
+            long secondBusy = CpuInfo.getBusy(i) - beforeBusy; // counts how many ticks a core was busy in 1s
+            long secondIdle = CpuInfo.getIdle(i) - beforeIdle; // counts how many ticks a core was idle in 1s
 
             double busyRatio = ((double) secondBusy / (secondBusy + secondIdle)) * 100; // multiplied by 100 to get a percent
 
@@ -53,9 +53,9 @@ public class helpermethods {
     public static String[] getRAMInfo() {
         String[] raminfo = new String[3];
 
-        double percentageUsed = ((double) memInfo.getUsed() / (double) memInfo.getTotal()) * 100.0;
-        String memoryTotal = String.format("%.2f", helpermethods.kibibytesToGibibyes(memInfo.getTotal()));
-        String memoryUsed = String.format("%.2f", helpermethods.kibibytesToGibibyes(memInfo.getUsed()));
+        double percentageUsed = ((double) MemInfo.getUsed() / (double) MemInfo.getTotal()) * 100.0;
+        String memoryTotal = String.format("%.2f", HelperMethods.kibibytesToGibibyes(MemInfo.getTotal()));
+        String memoryUsed = String.format("%.2f", HelperMethods.kibibytesToGibibyes(MemInfo.getUsed()));
         String percentUsed = String.format("%.2f", percentageUsed);
 
         raminfo[0] = memoryTotal;
@@ -65,30 +65,30 @@ public class helpermethods {
     }
 
     public  static String[][] printUSBInfo() {
-        String[][] usbarray = new String[usbInfo.getCount()][6];
-        idLookup usb = null;
+        String[][] usbarray = new String[UsbInfo.getCount()][6];
+        IdLookup usb = null;
 
         try {
-            usb = idLookup.usb();
+            usb = IdLookup.usb();
         } 
         catch (IOException e) {
             return usbarray;
         }
 
-        for (int i = 0; i < usbInfo.getCount(); i++) {
-            int vendor = usbInfo.getVendorId(i);
-            int product = usbInfo.getProductId(i);
+        for (int i = 0; i < UsbInfo.getCount(); i++) {
+            int vendor = UsbInfo.getVendorId(i);
+            int product = UsbInfo.getProductId(i);
             System.out.printf(
                 "  Bus %03d Device %03d: ID %04x:%04x  %s %s%n",
-                usbInfo.getBusNumber(i),
-                usbInfo.getDeviceNumber(i),
+                UsbInfo.getBusNumber(i),
+                UsbInfo.getDeviceNumber(i),
                 vendor,
                 product,
                 usb.vendorName(vendor),
                 usb.deviceName(vendor, product)
             );
-            usbarray[i][0] = String.valueOf(usbInfo.getBusNumber(i)); // Bus Number
-            usbarray[i][1] = String.valueOf(usbInfo.getDeviceNumber(i)); // Device Number
+            usbarray[i][0] = String.valueOf(UsbInfo.getBusNumber(i)); // Bus Number
+            usbarray[i][1] = String.valueOf(UsbInfo.getDeviceNumber(i)); // Device Number
             usbarray[i][2] = String.format("%04x", vendor); // vendor
             usbarray[i][3] = String.format("%04x", product); // product
             usbarray[i][4] = usb.vendorName(vendor); // Vendor as name
@@ -98,18 +98,18 @@ public class helpermethods {
         }
 
     public static String[][] getPciInfo() {
-        idLookup pci = null;
-        String[][] pciArray = new String[pciInfo.getCount()][5];
+        IdLookup pci = null;
+        String[][] pciArray = new String[PciInfo.getCount()][5];
         try {
-            pci = idLookup.pci();
+            pci = IdLookup.pci();
         } catch (IOException e) {
             return pciArray;
         }
 
-        for (int i = 0; i < pciInfo.getCount(); i++) {
-            int vendorId = pciInfo.getVendorId(i);
-            int deviceId = pciInfo.getDeviceId(i);
-            String address = pciInfo.getAddress(i);
+        for (int i = 0; i < PciInfo.getCount(); i++) {
+            int vendorId = PciInfo.getVendorId(i);
+            int deviceId = PciInfo.getDeviceId(i);
+            String address = PciInfo.getAddress(i);
             String name = pci.vendorName(vendorId);
 
 
