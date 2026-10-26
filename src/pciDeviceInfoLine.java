@@ -6,12 +6,14 @@ public class pciDeviceInfoLine {
     ArrayList<Integer> deviceIds;
     ArrayList<String> addresses;
     ArrayList<String> vendorNames;
+    ArrayList<String> deviceNames;
 
     public pciDeviceInfoLine() {
         this.vendorIds = new ArrayList<>();
         this.deviceIds = new ArrayList<>();
         this.addresses = new ArrayList<>();
         this.vendorNames = new ArrayList<>();
+        this.deviceNames = new ArrayList<>();
     }
 
     public void addVendorId(Integer vendorId) {
@@ -26,8 +28,12 @@ public class pciDeviceInfoLine {
         this.addresses.add(address);
     }
 
-    public void addVendorName(String name) {
-        this.vendorNames.add(name);
+    public void addVendorName(String vendorName) {
+        this.vendorNames.add(vendorName);
+    }
+
+    public void addDeviceName(String deviceName) {
+        this.deviceNames.add(deviceName);
     }
 
     public void sortVendorNames() {
@@ -50,8 +56,8 @@ public class pciDeviceInfoLine {
         return this.vendorNames;
     }
 
-    public String getDeviceName(idLookup pci, int i) {
-        return pci.deviceName(this.vendorIds.get(i), this.deviceIds.get(i));
+    public ArrayList<String> getDeviceNames() {
+        return this.deviceNames;
     }
 
     public void getVendorSummary() {
