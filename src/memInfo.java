@@ -4,36 +4,35 @@ import java.nio.file.Path;
  * Information about memory, read from /proc/meminfo. All sizes are in KiB
  * (1 KiB = 1024 bytes), which is the unit Linux uses in that file.
  */
-public class memInfo
-{
-    private static final Path MEMINFO = sysFile.path("/proc/meminfo");
+public class MemInfo {
+
+    private static final Path MEMINFO = SysFile.path("/proc/meminfo");
 
     /** Total installed memory in KiB, or -1 if it cannot be read. */
-    public static double getTotal()
-    {
+    public static double getTotal() {
         return field("MemTotal");
     }
 
     /** Memory that programs could use right now (free plus easily reclaimed), in KiB. */
-    public static double getAvailable()
-    {
+    public static double getAvailable() {
         return field("MemAvailable");
     }
 
     /** Memory in use in KiB: total minus available. */
-    public static double getUsed()
-    {
+    public static double getUsed() {
         double total = getTotal();
         double available = getAvailable();
-        return (total < 0 || available < 0) ? -1 : total - available;
+        return total < 0 || available < 0 ? -1 : total - available;
     }
 
     /** The value in KiB of a named line of /proc/meminfo such as "SwapTotal", or -1. */
-    public static double field(String name)
-    {
-        for (String line : sysFile.lines(MEMINFO)) {
+    public static double field(String name) {
+        for (String line : SysFile.lines(MEMINFO)) {
             if (line.startsWith(name + ":")) {
-                String[] part = line.substring(name.length() + 1).strip().split("\\s+");
+                String[] part = line
+                    .substring(name.length() + 1)
+                    .strip()
+                    .split("\\s+");
                 try {
                     return Long.parseLong(part[0]);
                 } catch (NumberFormatException e) {
