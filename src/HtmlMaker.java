@@ -3,8 +3,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class HtmlMaker {
-    public static void makeHtml() throws IOException{
 
+    public static void makeHtml() throws IOException {
         // THIS SECTION DOES ALL THE HTML STUFF
 
         // get CPU information for silly html file
@@ -12,14 +12,13 @@ public class HtmlMaker {
         String cpuCores = String.valueOf(CpuInfo.getCount());
         double[][] workload = HelperMethods.workloadPerCore();
 
-        
         String html = Files.readString(Path.of("src/HtmlTemp.html"));
         html = html.replace("{{CPU_MODEL}}", cpuModel);
         html = html.replace("{{CPU_CORES}}", cpuCores);
 
         // goes through each cpu core nd displays each ones busy + idle numbers
         String jsonCpuCores = "{\"Cores\":[";
-        for(int i = 0; i < workload.length; i++){
+        for (int i = 0; i < workload.length; i++) {
             double busy = workload[i][0];
             double idle = workload[i][1];
             double percent = workload[i][2];
@@ -39,7 +38,7 @@ public class HtmlMaker {
             jsonCpuCores += "\"Percentage Busy\": " + percentRounded;
             jsonCpuCores += "}";
 
-            if (i < workload.length - 1){
+            if (i < workload.length - 1) {
                 jsonCpuCores += ",";
             }
         }
@@ -59,8 +58,8 @@ public class HtmlMaker {
         String[][] usbinfo = HelperMethods.printUSBInfo();
 
         String jsonUsbDevices = "{\"Usb Devices\":[";
-        for(int i = 0; i < usbinfo.length; i++){
 
+        for (int i = 0; i < usbinfo.length; i++) {
             String busNo = usbinfo[i][0];
             String deviceNo = usbinfo[i][1];
             String vendor = usbinfo[i][2];
@@ -69,16 +68,17 @@ public class HtmlMaker {
             String vendorProduct = usbinfo[i][5];
 
             html += "<div class='centeredDiv'>";
-            html += "<h2>USB " + (i+1) + "</h2>";
+            html += "<h2>USB " + (i + 1) + "</h2>";
             html += "<p>USB Bus Number: " + busNo + "</p>";
             html += "<p>USB Device Number: " + deviceNo + "</p>";
-            html += "<p>Vendor & Product: " + vendor + ":" + product+ "%</p>";
+            html += "<p>Vendor Id: " + vendor + "</p>";
+            html += "<p>Product Id: " + product + "</p>";
             html += "<p>Vendor Name: " + vendorName + "</p>";
             html += "<p>Vendor Product: " + vendorProduct + "</p>";
             html += "</div>";
 
             jsonUsbDevices += "{";
-            jsonUsbDevices += "\"USB\":" + (i+1) + ",";
+            jsonUsbDevices += "\"USB\":" + (i + 1) + ",";
             jsonUsbDevices += "\"Bus Number\": " + busNo + ",";
             jsonUsbDevices += "\"Device Number\": " + deviceNo + ",";
             jsonUsbDevices += "\"Vendor & Product Number\": \"" + vendor + ":" + product + "\",";
@@ -86,8 +86,7 @@ public class HtmlMaker {
             jsonUsbDevices += "\"Vendor Product\": \"" + vendorProduct + "\"";
             jsonUsbDevices += "}";
 
-
-            if (i < usbinfo.length - 1){
+            if (i < usbinfo.length - 1) {
                 jsonUsbDevices += ",";
             }
         }
@@ -100,10 +99,8 @@ public class HtmlMaker {
 
         String[][] pciInfo = HelperMethods.getPciInfo();
 
-
         String jsonPCIDevices = "{\"PCI Devices\":[";
-        for(int i = 0; i < pciInfo.length; i++){
-
+        for (int i = 0; i < pciInfo.length; i++) {
             String address = pciInfo[i][0];
             String vendorID = pciInfo[i][1];
             String deviceID = pciInfo[i][2];
@@ -111,37 +108,68 @@ public class HtmlMaker {
             String deviceName = pciInfo[i][4];
 
             html += "<div class='centeredDiv'>";
-            html += "<h2>PCI Device " + (i+1) + "</h2>";
+            html += "<h2>PCI Device " + (i + 1) + "</h2>";
             html += "<p>PCI Address: " + address + "</p>";
-            html += "<p>PCI Vendor and Device ID: " + vendorID + ":" + deviceID + "</p>";
+            html += "<p>PCI Vendor ID: " + vendorID + "</p>";
+            html += "<p>PCI Device ID: " + deviceID + "</p>";
             html += "<p>PCI Name: " + name + "</p>";
             html += "<p>PCI Device Name: " + deviceName + "</p>";
             html += "</div>";
 
             jsonPCIDevices += "{";
-            jsonPCIDevices += "\"PCI\" : " + (i+1) + ",";
+            jsonPCIDevices += "\"PCI\" : " + (i + 1) + ",";
             jsonPCIDevices += "\"PCI Address\": \"" + address + "\",";
             jsonPCIDevices += "\"PCI Vendor & Device ID\": \"" + vendorID + ":" + deviceID + "\",";
             jsonPCIDevices += "\"PCI Name\": \"" + name + "\",";
             jsonPCIDevices += "\"PCI Device Name\": \"" + deviceName + "\"";
             jsonPCIDevices += "}";
 
-            if (i < pciInfo.length - 1){
+            if (i < pciInfo.length - 1) {
                 jsonPCIDevices += ",";
             }
         }
         jsonPCIDevices += "]}";
 
-
-
         Files.writeString(Path.of("HtmlReport.html"), html);
 
         // THIS SECTION DOES ALL THE CSV STUFF
 
-        String csv = "CPU_Model,CPU_Cores,CPU_Usage_per_core,Total_Memory,Memory_Used,Memory_Used_As_A_Percentage,Number_Of_USB_Devices,USB_Devices,Number_of_PCI_Devices,PCI_Devices\n"
-           + "\"" + cpuModel + "\"," + "\"" + cpuCores + "\"," + "\"" + jsonCpuCores.replace("\"", "\"\"") + "\"," + "\"" + memoryInfo[0] + "GB" + "\"," + "\"" + memoryInfo[1] + "GB" + "\"," + "\"" + memoryInfo[2] + "%" + "\"," + "\"" + usbCountString + "\"," + "\"" + jsonUsbDevices.replace("\"", "\"\"") + "\"," + "\"" + pciCountInt + "\"," + "\"" + jsonPCIDevices.replace("\"", "\"\"") + "\"\n";
+        String csv =
+            "CPU_Model,CPU_Cores,CPU_Usage_per_core,Total_Memory,Memory_Used,Memory_Used_As_A_Percentage,Number_Of_USB_Devices,USB_Devices,Number_of_PCI_Devices,PCI_Devices\n" +
+            "\"" +
+            cpuModel +
+            "\"," +
+            "\"" +
+            cpuCores +
+            "\"," +
+            "\"" +
+            jsonCpuCores.replace("\"", "\"\"") +
+            "\"," +
+            "\"" +
+            memoryInfo[0] +
+            "GB" +
+            "\"," +
+            "\"" +
+            memoryInfo[1] +
+            "GB" +
+            "\"," +
+            "\"" +
+            memoryInfo[2] +
+            "%" +
+            "\"," +
+            "\"" +
+            usbCountString +
+            "\"," +
+            "\"" +
+            jsonUsbDevices.replace("\"", "\"\"") +
+            "\"," +
+            "\"" +
+            pciCountInt +
+            "\"," +
+            "\"" +
+            jsonPCIDevices.replace("\"", "\"\"") +
+            "\"\n";
 
         Files.writeString(Path.of("cpu_data.csv"), csv);
-        
     }
 }
