@@ -1,6 +1,8 @@
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 
 public class HtmlMaker {
 
@@ -171,5 +173,48 @@ public class HtmlMaker {
             "\"\n";
 
         Files.writeString(Path.of("cpu_data.csv"), csv);
+
+        // THIS SECTION DOES ALL THE SQLITE STUFF
+
+        String url = "jdbc:sqlite:system.db";
+        
+
+        String sql = "INSERT INTO system_info (cpu_model, cpu_cores, cpu_cores_json, total_memory, memory_used, memory_used_percent, usb_device_count, usb_devices, pci_device_count, pci_devices) " +
+        "VALUES (?,?,?,?,?,?,?,?,?,?)";
+
+        try (var connect = DriverManager.getConnection(url);
+            PreparedStatement ps = connect.prepareStatement(sql)){
+
+            ps.setString(1, cpuModel);
+            ps.setInt(2, Integer.parseInt(cpuCores));
+            ps.setString(3, jsonCpuCores);
+            ps.setDouble(4, Double.parseDouble(memoryInfo[0]));
+            ps.setDouble(5, Double.parseDouble(memoryInfo[1]));
+            ps.setDouble(6, Double.parseDouble(memoryInfo[2]));
+            ps.setInt(7, Integer.parseInt(usbCountString));
+            ps.setString(8, jsonUsbDevices);
+            ps.setDouble(9, pciCountInt);
+            ps.setString(10, jsonPCIDevices);
+            ps.executeUpdate();
+            }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+
+
+//CREATE TABLE system_info (
+//    id INTEGER PRIMARY KEY AUTOINCREMENT,
+//    cpu_model TEXT,
+//    cpu_cores INTEGER,
+//    cpu_cores_json TEXT,
+//    total_memory REAL,
+//    memory_used REAL,
+//    memory_used_percent REAL,
+//    usb_device_count INTEGER,
+//    usb_devices TEXT,
+//   pci_device_count REAL,
+//    pci_devices TEXT
+//);
     }
 }
