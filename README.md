@@ -10,11 +10,11 @@ server. Windows (including WSL2) and macOS do not provide these files.
     javac -d out src/*.java
     java -cp "out:libs/*" demo
 
-## Build and run SQLiteReader
-  mkdir -p out
-  javac -cp "libs/*" -d out SQLiteReader/SQLiteReader.java
-  java -cp "out:libs/*" SQLiteReader
-
+## Build and run SQLiteReader/
+    mkdir -p out
+    javac -cp "libs/*" -d out SQLiteReader/SQLiteReader.java
+    java -cp "out:libs/*" SQLiteReader
+    
 ---
 
 Run `java` from this folder, so that the `ids` folder is found. `Demo` shows
