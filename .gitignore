@@ -3,3 +3,11 @@
 cs4421-comp-org-project.iml
 out/
 skills/
+
+# Executables
+singlethread
+multithread
+
+# Output
+HtmlReport.html
+cpu_data.csv
