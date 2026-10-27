@@ -38,8 +38,9 @@ public class Demo {
     }
 
     private static void printCpuInfo() {
-        System.out.println("cores: " + CpuInfo.getCount());
-        System.out.println("model: " + CpuInfo.getModel());
+        System.out.println("CPU Info:");
+        System.out.println("  Model: " + CpuInfo.getModel());
+        System.out.println("  Cores: " + CpuInfo.getCount());
 
         Core[] cpuCores = new Core[CpuInfo.getCount()];
 
@@ -47,16 +48,11 @@ public class Demo {
             cpuCores[i] = new Core(CpuInfo.getBusy(i), CpuInfo.getIdle(i));
         }
 
-        System.out.println("GATHERING DATA --- 1s");
-
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt(); // restores interrupted status
         }
-
-        System.out.print("\033[1A\033[2K"); // moves the cursor up by one line and clears it
-        System.out.flush(); // forces the text out of the buffer onto the screen immediately
 
         double sumLoad = 0;
         for (int i = 0; i < CpuInfo.getCount(); i++) {
@@ -68,7 +64,7 @@ public class Demo {
             // percentage
 
             System.out.println(
-                "core " +
+                "  Core " +
                     i +
                     ": busy=" +
                     (secondBusy + beforeBusy) +
@@ -84,23 +80,71 @@ public class Demo {
 
         double avgLoad = sumLoad / CpuInfo.getCount();
         System.out.println(
-            "Average load across all cores is " + String.format("%.2f", avgLoad) + "%."
+            "  Average load across all cores is " + String.format("%.2f", avgLoad) + "%.\n"
         );
     }
 
     // printMemory now displays data as GibiBytes instead of kibibytes, because
     // kibibytes is a silly way to display memory in 2026, - Luke-F-W
     private static void printMemoryInfo() {
+        System.out.println("Memory Info:");
         double percentageUsed = ((double) MemInfo.getUsed() / (double) MemInfo.getTotal()) * 100.0;
         System.out.println(
-            "memory: total = " +
+            "  Memory: Total = " +
                 String.format("%.2f", HelperMethods.kibibytesToGibibyes(MemInfo.getTotal())) +
-                " GiB, used = " +
+                " GiB, Used = " +
                 String.format("%.2f", HelperMethods.kibibytesToGibibyes(MemInfo.getUsed())) +
                 " GiB (" +
                 String.format("%.2f", percentageUsed) +
-                "%)"
+                "%)\n"
         );
+    }
+
+    private static void printUSBInfo() {
+        IdLookup usb = null;
+
+        try {
+            usb = IdLookup.usb();
+        } catch (IOException e) {
+            System.out.println("Could not look up USBs: " + e);
+            return;
+        }
+
+        if (UsbInfo.getCount() == 0) {
+            System.out.println("USB devices: no USB devices found.");
+        } else {
+            System.out.println("USB devices: " + UsbInfo.getCount());
+
+            for (int i = 0; i < UsbInfo.getCount(); i++) {
+                int vendor = UsbInfo.getVendorId(i);
+                int product = UsbInfo.getProductId(i);
+                String vendorName = usb.vendorName(vendor);
+                String deviceName = usb.deviceName(vendor, product);
+
+                if (vendorName == null) {
+                    System.out.printf(
+                        "  Bus %03d Device %03d: ID %04x:%04x  %d%n",
+                        UsbInfo.getBusNumber(i),
+                        UsbInfo.getDeviceNumber(i),
+                        vendor,
+                        product,
+                        vendorName
+                    );
+                } else {
+                    System.out.printf(
+                        "  Bus %03d Device %03d: ID %04x:%04x  %s %s%n",
+                        UsbInfo.getBusNumber(i),
+                        UsbInfo.getDeviceNumber(i),
+                        vendor,
+                        product,
+                        vendorName,
+                        deviceName
+                    );
+                }
+            }
+        }
+
+        System.out.println();
     }
 
     private static void printPCIInfoByVendor() {
@@ -155,6 +199,8 @@ public class Demo {
             }
         }
 
+        System.out.println();
+
         pciDeviceInfo.getVendorSummary();
     }
 
@@ -205,51 +251,8 @@ public class Demo {
             }
         }
 
+        System.out.println();
+
         pciDeviceInfo.getVendorSummary();
-    }
-
-    private static void printUSBInfo() {
-        IdLookup usb = null;
-
-        try {
-            usb = IdLookup.usb();
-        } catch (IOException e) {
-            System.out.println("Could not look up USBs: " + e);
-            return;
-        }
-
-        if (UsbInfo.getCount() == 0) {
-            System.out.println("USB devices: no USB devices found.");
-        } else {
-            System.out.println("USB devices: " + UsbInfo.getCount());
-
-            for (int i = 0; i < UsbInfo.getCount(); i++) {
-                int vendor = UsbInfo.getVendorId(i);
-                int product = UsbInfo.getProductId(i);
-                String vendorName = usb.vendorName(vendor);
-                String deviceName = usb.deviceName(vendor, product);
-
-                if (vendorName == null) {
-                    System.out.printf(
-                        "  Bus %03d Device %03d: ID %04x:%04x  %d%n",
-                        UsbInfo.getBusNumber(i),
-                        UsbInfo.getDeviceNumber(i),
-                        vendor,
-                        product,
-                        vendorName
-                    );
-                } else {
-                    System.out.printf(
-                        "  Bus %03d Device %03d: ID %04x:%04x  %s %s%n",
-                        UsbInfo.getBusNumber(i),
-                        UsbInfo.getDeviceNumber(i),
-                        vendor,
-                        product,
-                        vendorName,
-                        deviceName
-                    );
-                }
-            }
-        }
     }
 }
