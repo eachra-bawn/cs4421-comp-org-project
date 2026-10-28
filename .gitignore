@@ -11,3 +11,6 @@ multithread
 # Output
 HtmlReport.html
 cpu_data.csv
+
+# Rust
+amdahl/target
