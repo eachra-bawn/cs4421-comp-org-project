@@ -9,6 +9,8 @@ import java.time.LocalDateTime;
 public class HtmlCsvSQLite {
 
     public static void makeHtml() throws IOException {
+        String ANSI_RESET = "\u001B[0m"; //reset
+        String ANSI_GREEN = "\u001B[48;2;124;204;87m"; //headers
         // THIS SECTION DOES ALL THE HTML STUFF
 
         // get CPU information for silly html file
@@ -150,6 +152,7 @@ public class HtmlCsvSQLite {
         Files.writeString(Path.of("HtmlReport.html"), html);
 
         // THIS SECTION DOES ALL THE CSV STUFF
+        System.out.println(ANSI_GREEN + "This Machine has " + cpuCores + " and " + memoryInfo[0] + " GiB of RAM, of which" + memoryInfo[1] +"GiB is in use"+ ANSI_RESET);
 
         String csv =
             "CPU_Model,CPU_Cores,CPU_Usage_per_core,Total_Memory,Memory_Used,Memory_Used_As_A_Percentage,Number_Of_USB_Devices,USB_Devices,Number_of_PCI_Devices,PCI_Devices,Date,Time\n" +
