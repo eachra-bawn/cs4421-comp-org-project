@@ -24,6 +24,7 @@ public static final String ANSI_RED = "\u001B[48;2;179;1;30m";
     public static void main(String[] args) throws Exception {
         printCpuInfo();
         printMemoryInfo();
+        DiskInfo.printDisks();
         printUSBInfo();
 
         if (args.length > 0) {
