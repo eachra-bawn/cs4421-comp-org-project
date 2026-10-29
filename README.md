@@ -26,6 +26,7 @@ java -cp "out:libs/*" Demo -- -vendor
     
  - `-vendor`: Sort PCI devices by vendor name
  - `-bus`: Sort PCI devices by bus number
+ - `-amdahl`: Runs amdahls law calculations
 
 
 ## Build and run amdahl/

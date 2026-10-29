@@ -79,5 +79,6 @@ public class SQLiteReader {
             System.out.println("Goodbye");
             System.exit(0);
         }
+    obj.close();
     }
 }
