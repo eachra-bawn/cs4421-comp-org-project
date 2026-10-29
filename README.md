@@ -14,11 +14,32 @@ server. Windows (including WSL2) and macOS do not provide these files.
     mkdir -p out
     javac -cp "libs/*" -d out SQLiteReader/SQLiteReader.java
     java -cp "out:libs/*" SQLiteReader
-    
----
 
 Run `java` from this folder, so that the `ids` folder is found. `Demo` shows
 how to call each class; it is not a solution to the assignment.
+
+
+## Build and run amdahl/
+
+### Install cargo
+For Linux and macOS:
+```
+curl https://sh.rustup.rs -sSf | sh
+```
+For Windows, use this executable:
+[rustup-init.exe](https://win.rustup.rs/)
+
+### To run:
+For single-threaded version:
+```
+cargo run --bin single
+```
+For mutli-threaded version:
+```
+cargo run --bin multi
+```
+---
+
 
 ## The classes
 
