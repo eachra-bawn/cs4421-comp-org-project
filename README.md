@@ -8,7 +8,7 @@ server. Windows (including WSL2) and macOS do not provide these files.
 ## Build and run src/
     mkdir -p out
     javac -d out src/*.java
-    java -cp "out:libs/*" demo
+    java -cp "out:libs/*" Demo
 
 ## Build and run SQLiteReader/
     mkdir -p out

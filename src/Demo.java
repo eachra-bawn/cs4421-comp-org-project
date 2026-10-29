@@ -11,6 +11,15 @@
 import java.io.IOException;
 
 public class Demo {
+public static final String ANSI_RESET = "\u001B[0m"; //reset
+public static final String ANSI_GREEN = "\u001B[48;2;124;204;87m"; //headers
+public static final String ANSI_DARK_BLUE = "\u001B[34m"; //cpu
+public static final String ANSI_PINK = "\u001B[38;2;255;20;147m"; //memory
+public static final String ANSI_CYAN = "\u001B[38;2;0;255;255m"; //USB devices
+public static final String ANSI_YELLOW = "\u001B[38;2;255;215;0m"; //pci
+
+public static final String ANSI_RED = "\u001B[48;2;179;1;30m";
+
 
     public static void main(String[] args) throws Exception {
         printCpuInfo();
@@ -38,9 +47,9 @@ public class Demo {
     }
 
     private static void printCpuInfo() {
-        System.out.println("CPU Info:");
-        System.out.println("  Model: " + CpuInfo.getModel());
-        System.out.println("  Cores: " + CpuInfo.getCount());
+        System.out.println(Demo.ANSI_GREEN + "CPU Info:" + Demo.ANSI_RESET);
+        System.out.println(Demo.ANSI_DARK_BLUE + "  Model: " + CpuInfo.getModel() + Demo.ANSI_RESET);
+        System.out.println(Demo.ANSI_DARK_BLUE + "  Cores: " + CpuInfo.getCount() + Demo.ANSI_RESET);   
 
         Core[] cpuCores = new Core[CpuInfo.getCount()];
 
@@ -64,7 +73,7 @@ public class Demo {
             // percentage
 
             System.out.println(
-                "  Core " +
+                Demo.ANSI_DARK_BLUE + "  Core " +
                     i +
                     ": busy=" +
                     (secondBusy + beforeBusy) +
@@ -72,7 +81,7 @@ public class Demo {
                     (secondIdle + beforeIdle) +
                     "  (" +
                     String.format("%.2f", busyRatio) +
-                    "%)"
+                    "%)" + ANSI_RESET
             );
 
             sumLoad += busyRatio;
@@ -80,23 +89,23 @@ public class Demo {
 
         double avgLoad = sumLoad / CpuInfo.getCount();
         System.out.println(
-            "  Average load across all cores is " + String.format("%.2f", avgLoad) + "%.\n"
+            Demo.ANSI_DARK_BLUE + "  Average load across all cores is " + String.format("%.2f", avgLoad) + "%." + ANSI_RESET + "\n"
         );
     }
 
     // printMemory now displays data as GibiBytes instead of kibibytes, because
     // kibibytes is a silly way to display memory in 2026, - Luke-F-W
     private static void printMemoryInfo() {
-        System.out.println("Memory Info:");
+        System.out.println(Demo.ANSI_GREEN + "Memory Info:" + Demo.ANSI_RESET);
         double percentageUsed = ((double) MemInfo.getUsed() / (double) MemInfo.getTotal()) * 100.0;
         System.out.println(
-            "  Memory: Total = " +
+            Demo.ANSI_PINK + "  Memory: Total = " +
                 String.format("%.2f", HelperMethods.kibibytesToGibibyes(MemInfo.getTotal())) +
                 " GiB, Used = " +
                 String.format("%.2f", HelperMethods.kibibytesToGibibyes(MemInfo.getUsed())) +
                 " GiB (" +
                 String.format("%.2f", percentageUsed) +
-                "%)\n"
+                "%)" + Demo.ANSI_RESET + "\n"
         );
     }
 
@@ -106,14 +115,14 @@ public class Demo {
         try {
             usb = IdLookup.usb();
         } catch (IOException e) {
-            System.out.println("Could not look up USBs: " + e);
+            System.out.println(ANSI_RED + "Could not look up USBs: " + e + ANSI_RESET);
             return;
         }
 
         if (UsbInfo.getCount() == 0) {
-            System.out.println("USB devices: no USB devices found.");
+            System.out.println(ANSI_RED + "USB devices: no USB devices found." + ANSI_RESET);
         } else {
-            System.out.println("USB devices: " + UsbInfo.getCount());
+            System.out.println(ANSI_GREEN + "USB devices: " + UsbInfo.getCount() + ANSI_RESET);
 
             for (int i = 0; i < UsbInfo.getCount(); i++) {
                 int vendor = UsbInfo.getVendorId(i);
@@ -123,7 +132,7 @@ public class Demo {
 
                 if (vendorName == null) {
                     System.out.printf(
-                        "  Bus %03d Device %03d: ID %04x:%04x  %d%n",
+                        ANSI_CYAN + "  Bus %03d Device %03d: ID %04x:%04x  %d%n" + ANSI_RESET,
                         UsbInfo.getBusNumber(i),
                         UsbInfo.getDeviceNumber(i),
                         vendor,
@@ -132,7 +141,7 @@ public class Demo {
                     );
                 } else {
                     System.out.printf(
-                        "  Bus %03d Device %03d: ID %04x:%04x  %s %s%n",
+                        ANSI_CYAN + "  Bus %03d Device %03d: ID %04x:%04x  %s %s%n" + ANSI_RESET,
                         UsbInfo.getBusNumber(i),
                         UsbInfo.getDeviceNumber(i),
                         vendor,
@@ -153,11 +162,11 @@ public class Demo {
         try {
             pci = IdLookup.pci();
         } catch (IOException e) {
-            System.out.println("Could not look up PCI devices: " + e);
+            System.out.println(ANSI_RED + "Could not look up PCI devices: " + e + ANSI_RESET);
             return;
         }
 
-        System.out.println("PCI devices: " + PciInfo.getCount());
+        System.out.println(ANSI_GREEN + "PCI devices: " + PciInfo.getCount() + ANSI_RESET);
 
         PciDeviceInfoLine pciDeviceInfo = new PciDeviceInfoLine();
 
@@ -180,7 +189,7 @@ public class Demo {
         for (int i = 0; i < PciInfo.getCount(); i++) {
             if (pciDeviceInfo.getVendorNames().get(i) == null) {
                 System.out.printf(
-                    "  %s  %04x:%04x  %04x%n",
+                    ANSI_YELLOW + "  %s  %04x:%04x  %04x%n" + ANSI_RESET,
                     pciDeviceInfo.getAddresses().get(i),
                     pciDeviceInfo.getVendorIds().get(i),
                     pciDeviceInfo.getDeviceIds().get(i),
@@ -189,7 +198,7 @@ public class Demo {
                 );
             } else {
                 System.out.printf(
-                    "  %s  %04x:%04x  %s %s%n",
+                    ANSI_YELLOW + "  %s  %04x:%04x  %s %s%n" + ANSI_RESET,
                     pciDeviceInfo.getAddresses().get(i),
                     pciDeviceInfo.getVendorIds().get(i),
                     pciDeviceInfo.getDeviceIds().get(i),
@@ -210,11 +219,11 @@ public class Demo {
         try {
             pci = IdLookup.pci();
         } catch (IOException e) {
-            System.out.println("Could not look up PCI devices: " + e);
+            System.out.println(ANSI_RED + "Could not look up PCI devices: " + e + ANSI_RESET);
             return;
         }
 
-        System.out.println("PCI devices: " + PciInfo.getCount());
+        System.out.println(ANSI_GREEN + "PCI devices: " + PciInfo.getCount() + ANSI_RESET);
 
         PciDeviceInfoLine pciDeviceInfo = new PciDeviceInfoLine();
 
@@ -233,7 +242,7 @@ public class Demo {
 
             if (vendorName == null) {
                 System.out.printf(
-                    "  %s  %04x:%04x  %04x%n",
+                    ANSI_YELLOW + "  %s  %04x:%04x  %04x%n" + ANSI_RESET,
                     pciDeviceInfo.getAddresses().get(i),
                     pciDeviceInfo.getVendorIds().get(i),
                     pciDeviceInfo.getDeviceIds().get(i),
@@ -241,7 +250,7 @@ public class Demo {
                 );
             } else {
                 System.out.printf(
-                    "  %s  %04x:%04x  %s %s%n",
+                    ANSI_YELLOW + "  %s  %04x:%04x  %s %s%n" + ANSI_RESET,
                     pciDeviceInfo.getAddresses().get(i),
                     pciDeviceInfo.getVendorIds().get(i),
                     pciDeviceInfo.getDeviceIds().get(i),
