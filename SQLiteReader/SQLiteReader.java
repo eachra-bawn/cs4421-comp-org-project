@@ -63,7 +63,7 @@ public class SQLiteReader {
         }
         else if(option.equals("0")){
             System.out.println("Deleting Records");
-            String sql = "DELETE FROM system_info";
+            String sql = "DELETE FROM systemlogs";
 
             try (var connect = DriverManager.getConnection(url);
                 PreparedStatement ps = connect.prepareStatement(sql)){
