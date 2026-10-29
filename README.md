@@ -8,7 +8,7 @@ server. Windows (including WSL2) and macOS do not provide these files.
 ## Build and run src/
     mkdir -p out
     javac -d out src/*.java
-    java -cp "out:libs/*" demo
+    java -cp "out:libs/*" Demo
 
 ## Build and run SQLiteReader/
     mkdir -p out
@@ -17,6 +17,15 @@ server. Windows (including WSL2) and macOS do not provide these files.
 
 Run `java` from this folder, so that the `ids` folder is found. `Demo` shows
 how to call each class; it is not a solution to the assignment.
+
+## Flags
+Flags can be added using the following syntax:
+```
+java -cp "out:libs/*" Demo -- -vendor
+```
+    
+ - `-vendor`: Sort PCI devices by vendor name
+ - `-bus`: Sort PCI devices by bus number
 
 
 ## Build and run amdahl/
