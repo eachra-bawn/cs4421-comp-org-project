@@ -18,7 +18,7 @@ public static final String ANSI_PINK = "\u001B[38;2;255;20;147m"; //memory
 public static final String ANSI_CYAN = "\u001B[38;2;0;255;255m"; //USB devices
 public static final String ANSI_YELLOW = "\u001B[38;2;255;215;0m"; //pci
 
-public static final String ANSI_RED = "\u001B[48;2;179;1;30m";
+public static final String ANSI_RED = "\u001B[48;2;179;1;30m"; 
 
 
     public static void main(String[] args) throws Exception {
@@ -43,7 +43,7 @@ public static final String ANSI_RED = "\u001B[48;2;179;1;30m";
         } else {
             printPCIInfoByBus();
         }
-        HtmlMaker.makeHtml();
+        HtmlCsvSQLite.makeHtml();
     }
 
     private static void printCpuInfo() {

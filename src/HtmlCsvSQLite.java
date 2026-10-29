@@ -3,8 +3,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
 
-public class HtmlMaker {
+public class HtmlCsvSQLite {
 
     public static void makeHtml() throws IOException {
         // THIS SECTION DOES ALL THE HTML STUFF
@@ -13,10 +15,23 @@ public class HtmlMaker {
         String cpuModel = CpuInfo.getModel();
         String cpuCores = String.valueOf(CpuInfo.getCount());
         double[][] workload = HelperMethods.workloadPerCore();
-
+    
         String html = Files.readString(Path.of("src/HtmlTemp.html"));
+
+        DateTimeFormatter datef = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+        DateTimeFormatter timef = DateTimeFormatter.ofPattern("HH:mm");
+
+        LocalDateTime now = LocalDateTime.now();
+        String date = now.format(datef);
+        String time = now.format(timef);
+
+
+
         html = html.replace("{{CPU_MODEL}}", cpuModel);
         html = html.replace("{{CPU_CORES}}", cpuCores);
+
+        html = html.replace("{{DATE}}", date);
+        html = html.replace("{{TIME}}", time);
 
         // goes through each cpu core nd displays each ones busy + idle numbers
         String jsonCpuCores = "{\"Cores\":[";
@@ -137,7 +152,7 @@ public class HtmlMaker {
         // THIS SECTION DOES ALL THE CSV STUFF
 
         String csv =
-            "CPU_Model,CPU_Cores,CPU_Usage_per_core,Total_Memory,Memory_Used,Memory_Used_As_A_Percentage,Number_Of_USB_Devices,USB_Devices,Number_of_PCI_Devices,PCI_Devices\n" +
+            "CPU_Model,CPU_Cores,CPU_Usage_per_core,Total_Memory,Memory_Used,Memory_Used_As_A_Percentage,Number_Of_USB_Devices,USB_Devices,Number_of_PCI_Devices,PCI_Devices,Date,Time\n" +
             "\"" +
             cpuModel +
             "\"," +
@@ -170,6 +185,12 @@ public class HtmlMaker {
             "\"," +
             "\"" +
             jsonPCIDevices.replace("\"", "\"\"") +
+            "\"," +
+            "\"" +
+            date +
+            "\"," +
+            "\"" +
+            time +
             "\"\n";
 
         Files.writeString(Path.of("cpu_data.csv"), csv);
@@ -179,8 +200,8 @@ public class HtmlMaker {
         String url = "jdbc:sqlite:system.db";
         
 
-        String sql = "INSERT INTO system_info (cpu_model, cpu_cores, cpu_cores_json, total_memory, memory_used, memory_used_percent, usb_device_count, usb_devices, pci_device_count, pci_devices) " +
-        "VALUES (?,?,?,?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO systemlogs (cpu_model, cpu_cores, cpu_cores_json, total_memory, memory_used, memory_used_percent, usb_device_count, usb_devices, pci_device_count, pci_devices, date, time) " +
+        "VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
 
         try (var connect = DriverManager.getConnection(url);
             PreparedStatement ps = connect.prepareStatement(sql)){
@@ -195,6 +216,8 @@ public class HtmlMaker {
             ps.setString(8, jsonUsbDevices);
             ps.setDouble(9, pciCountInt);
             ps.setString(10, jsonPCIDevices);
+            ps.setString(11, date);
+            ps.setString(12, time);
             ps.executeUpdate();
             }
         catch(Exception e){
@@ -203,18 +226,20 @@ public class HtmlMaker {
 
 
 
-//CREATE TABLE system_info (
+//CREATE TABLE systemlogs (
 //    id INTEGER PRIMARY KEY AUTOINCREMENT,
 //    cpu_model TEXT,
 //    cpu_cores INTEGER,
 //    cpu_cores_json TEXT,
-//    total_memory REAL,
-//    memory_used REAL,
-//    memory_used_percent REAL,
+//    total_memory TEXT,
+//    memory_used TEXT,
+//    memory_used_percent TEXT,
 //    usb_device_count INTEGER,
 //    usb_devices TEXT,
-//   pci_device_count REAL,
-//    pci_devices TEXT
+//    pci_device_count REAL,
+//    pci_devices TEXT,
+//    date TEXT,
+//    time TEXT
 //);
     }
 }
