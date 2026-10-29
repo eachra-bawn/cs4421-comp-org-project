@@ -10,13 +10,18 @@ public class DiskInfo {
     private static final long SECTOR = 512;
 
     public static void printDisks() {
-        System.out.println("Drives:");
 
+        String ANSI_RESET = "\u001B[0m"; //reset
+        String ANSI_GREEN = "\u001B[48;2;124;204;87m";
+        String ANSI_CARAMEL = "\u001B[48;2;184;119;56m";
+        String ANSI_RED = "\u001B[48;2;179;1;30m"; 
+
+        System.out.println(ANSI_GREEN + "Drives:" + ANSI_RESET);
         //SysFile.path lets -Dhw.root testing work like the other classes
         File[] disks = SysFile.path("/sys/block").toFile().listFiles();
 
         if (disks == null) { //no /sys/block (windows, mac), listFiles gives null
-            System.out.println("  no drives found.\n");
+            System.out.println(ANSI_RED + "  no drives found.\n" + ANSI_RESET);
             return;
         }
         Arrays.sort(disks); //folder order is random, sort so the output is always the same
@@ -26,7 +31,7 @@ public class DiskInfo {
         try {
             pci = IdLookup.pci();
         } catch (IOException e) {
-            System.out.println("  (could not load the PCI ID list, NVMe vendor names will be missing)");
+            System.out.println(ANSI_RED + "  (could not load the PCI ID list, NVMe vendor names will be missing)" + ANSI_RESET);
         }
 
         for (File disk : disks) {
@@ -52,7 +57,7 @@ public class DiskInfo {
             if (label.isEmpty()) label = "unknown";
 
             long diskBytes = SysFile.number(disk.toPath().resolve("size")) * SECTOR;
-            System.out.println("  " + name + "  " + label + "  " + toGiB(diskBytes));
+            System.out.println(ANSI_CARAMEL + "  " + name + "  " + label + "  " + toGiB(diskBytes) + ANSI_RESET);
 
             //partitions are folders inside the drive folder that start with the drive name
             //allocated = space reserved by partitions, used = space filled with files in mounted partitions
@@ -63,11 +68,11 @@ public class DiskInfo {
 
                 long partBytes = SysFile.number(part.toPath().resolve("size")) * SECTOR;
                 allocated += partBytes;
-                System.out.println("      " + part.getName() + ": " + toGiB(partBytes));
+                System.out.println(ANSI_CARAMEL + "      " + part.getName() + ": " + toGiB(partBytes) + ANSI_RESET);
 
                 String mountPoint = getMountPoint(part.getName()); //null if not mounted
                 if (mountPoint == null) {
-                    System.out.println("         not mounted, usage unknown");
+                    System.out.println(ANSI_CARAMEL + "         not mounted, usage unknown" + ANSI_RESET);
                     continue;
                 }
 
@@ -78,29 +83,29 @@ public class DiskInfo {
                 long partUsed = total - mount.getFreeSpace();
 
                 if (total == 0) { //folder could not be read, avoids dividing by 0
-                    System.out.println("         usage unreadable");
+                    System.out.println(ANSI_CARAMEL + "         usage unreadable" + ANSI_RESET);
                     continue;
                 }
 
                 used += partUsed;
                 double partPercent = ((double) partUsed / total) * 100;
-                System.out.println(
+                System.out.println(ANSI_CARAMEL +
                     "         used = " + toGiB(partUsed) +
-                        " of " + toGiB(total) + " (" + String.format("%.2f", partPercent) + "%)"
+                        " of " + toGiB(total) + " (" + String.format("%.2f", partPercent) + "%)" + ANSI_RESET
                 );
             }
 
-            System.out.println(
+            System.out.println( ANSI_CARAMEL +
                 "      Allocated = " + toGiB(allocated) +
-                    ", Unallocated = " + toGiB(diskBytes - allocated)
+                    ", Unallocated = " + toGiB(diskBytes - allocated) + ANSI_RESET
             );
 
             //unmounted partitions count as 0 here, so this can be lower than the truth
             if (diskBytes > 0) {
                 double diskPercent = ((double) used / diskBytes) * 100;
-                System.out.println(
+                System.out.println(ANSI_CARAMEL +
                     "      Drive used = " + toGiB(used) +
-                        " of " + toGiB(diskBytes) + " (" + String.format("%.2f", diskPercent) + "%)"
+                        " of " + toGiB(diskBytes) + " (" + String.format("%.2f", diskPercent) + "%)" + ANSI_RESET
                 );
             }
         }
