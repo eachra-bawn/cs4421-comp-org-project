@@ -26,6 +26,7 @@ java -cp "out:libs/*" Demo -- -vendor
     
  - `-vendor`: Sort PCI devices by vendor name
  - `-bus`: Sort PCI devices by bus number
+ - `-amdahl`: Runs amdahls law calculations
 
 
 ## Build and run amdahl/
@@ -41,10 +42,12 @@ For Windows, use this executable:
 ### To run:
 For single-threaded version:
 ```
+cd amdahl
 cargo run --bin single
 ```
 For mutli-threaded version:
 ```
+cd amdahl
 cargo run --bin multi
 ```
 ---
