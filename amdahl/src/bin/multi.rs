@@ -67,6 +67,5 @@ fn matrix_multiply(a: &[i32], b: &[i32]) -> Vec<i64> {
         }
     });
 
-    
     c
 }

@@ -6,7 +6,7 @@ fn main() {
     // Start timer.
     let then = Instant::now();
 
-    // Matrices (2D) stored as flat-arrays (1D)Chat
+    // Matrices (2D) stored as flat-arrays (1D)
     let a = vec![0; N * N];
     let b = vec![0; N * N];
 
