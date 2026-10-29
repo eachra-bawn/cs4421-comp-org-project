@@ -36,6 +36,9 @@ public static final String ANSI_RED = "\u001B[48;2;179;1;30m";
                 case "-bus":
                     printPCIInfoByBus();
                     break;
+                case "-amdahl":
+                    Amdahl.calcAmdahl();
+                    break;
                 default:
                     printPCIInfoByBus();
                     break;

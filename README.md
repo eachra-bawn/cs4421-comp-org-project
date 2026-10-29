@@ -41,10 +41,12 @@ For Windows, use this executable:
 ### To run:
 For single-threaded version:
 ```
+cd amdahl
 cargo run --bin single
 ```
 For mutli-threaded version:
 ```
+cd amdahl
 cargo run --bin multi
 ```
 ---
